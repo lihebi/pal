@@ -6,6 +6,15 @@
 #define   FONT_COLOR_CYAN           0x8D
 #define   FONT_COLOR_CYAN_ALT       0x8C
 
+static const char g_rgszAdditionalWords[][WORD_LENGTH + 1] = {
+{0xBE, 0xD4, 0xB0, 0xAB, 0xB3, 0x74, 0xAB, 0xD7, 0x00, 0x00, 0x00}, // Battle Speed
+{0xA4, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // 1
+{0xA4, 0x47, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // 2
+{0xA4, 0x54, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // 3
+{0xA5, 0x7C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // 4
+{0xA4, 0xAD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // 5
+};
+
 typedef struct tagTextLib {
   char *wordBuf;
   char *msgBug;
@@ -67,4 +76,57 @@ int text_init() {
 
   MKF_read_chunk(g_textLib.dialogIconBuf, 282, 12, g_globalVars->f.fpData);
   return 0;
+}
+const char* get_word(ushort wordId) {
+  static char buf[WORD_LENGTH + 1];
+  if (wordId >= PAL_ADDITIONAL_WORD_FIRST) {
+    return g_additionalWords[wordId - PAL_ADDITIONAL_WORD_FIRST];
+  }
+  if (wordId >= g_textLib.nWords) {
+    return NULL;
+  }
+  memcpy(buf, &g_textLib.wordBuf[wordId * WORD_LENGTH], WORD_LENGTH);
+  buf[WORD_LENGTH] = '\0';
+  trim(buf);
+  if ((strlen(buf) & 1) != 0 && buf[strlen(buf) -1] == '1') {
+    buf[strlen(buf) - 1] = '\0';
+  }
+  return buf;
+}
+
+void draw_text(const char *text, uint pos, Byte color, bool shadow, bool update) {
+  SDL_Rect rect, urect;
+  ushort c;
+  rect.x = HEBI_X(pos);
+  rect.y = HEBI_Y(pos);
+  urect.x = rect.x;
+  urect.y = rect.y;
+  urect.h = 16;
+  urect.w = 0;
+  while(*text) {
+    if (*text && 0x80) {
+      // chinese
+      c = SWAP16(((Byte*)text)[0] | (((Byte*)text)[1] << 8));
+      if (shadow) {
+        // draw_char_on_surface();
+        // draw_char_on_surface();
+      }
+      draw_char_on_surface(c, g_screen, HEBI_XY(rect.x, rect.y), color);
+      text += 2;
+      rect.x += 16;
+      urect.w += 16;
+    } else {
+      // ASCII
+      if (shadow) {
+        // TODO
+      }
+      draw_ascii_char_on_surface(*text, g_screen, HEBI_XY(rect.x, rect.y), color);
+      text++;
+      rect.x += 8;
+      urect.w += 8;
+    }
+  }
+  if (update && urect.w > 0) {
+    video_update_screen(&urect);
+  }
 }

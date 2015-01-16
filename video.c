@@ -10,7 +10,7 @@ static ushort g_width = 640;
 static ushort g_height = 400;
 static ushort g_shakeTime = 0;
 static ushort g_shakeLevel = 0;
-void set_palette(SDL_Color palette[256]) {
+void video_set_palette(SDL_Color palette[256]) {
   SDL_SetPalette(g_screen, SDL_LOGPAL | SDL_PHYSPAL, palette, 0, 256);
   SDL_SetPalette(g_screenBak, SDL_LOGPAL | SDL_PHYSPAL, palette, 0, 256);
   SDL_SetPalette(g_screenReal, SDL_LOGPAL | SDL_PHYSPAL, palette, 0, 256);
@@ -25,6 +25,10 @@ int video_init(ushort width, ushort height) {
   g_screenReal->format->Rmask, g_screenReal->format->Gmask,
   g_screenReal->format->Bmask, g_screenReal->format->Amask);
   return 0;
+}
+// get current palette of the screen
+SDL_Color* video_get_palette() {
+  return g_screenReal->format->palette->colors;
 }
 void video_update_screen(const SDL_Rect *rect) {
   SDL_Rect src,dest;

@@ -62,3 +62,26 @@ int FBP_blit_to_surface(Byte *bitmapFBP, SDL_Surface *surface) {
   }
   return 0;
 }
+void delay(uint ms) {
+  uint t = SDL_GetTicks() + ms;
+  while(PAL_PollEvent(NULL));
+  while(SDL_GetTicks()<t) {
+    SDL_Delay(1);
+    while(PAL_PollEvent(NULL));
+  }
+}
+void trim(char *str) {
+  int pos=0;
+  char *dest = str;
+  while(str[pos] <= ' ' && str[pos] >0) {
+    pos++;
+  }
+  while(str[pos]) {
+    *(dest++) = str[pos];
+    pos++;
+  }
+  *(dest--) = '\0';
+  while(dest >= str && *dest <= ' ' && *dest >0) {
+    *(dest--) = '\0';
+  }
+}

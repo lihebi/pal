@@ -10,6 +10,11 @@ static void init(unsigned short width, unsigned short height) {
   resource_init();
   // SOUND_OpenAudio();
 }
+void shutdown() {
+  // SOUND_CloseAudio();
+  // FREE TODO
+  SDL_Quit();
+}
 int main() {
   unsigned short width=640, height=400;
   init(width, height);

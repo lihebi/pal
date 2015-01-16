@@ -6,6 +6,10 @@ void draw_opening_menu_background() {
   video_update_screen(NULL);
   free(buf);
 }
+int save_slot_menu(ushort defaultSlot) {
+  // TODO
+  return MENUITEM_VALUE_CANCELLED;
+}
 int opening_menu() {
   ushort selectedItem;
   ushort defaultItem = 0;
@@ -15,5 +19,23 @@ int opening_menu() {
   };
   // Play Music TODO
   draw_opening_menu_background();
-  
+  fade_in(0, false, 1);
+  while(true) {
+    selectedItem = read_menu(NULL, mainMenuItem, 2, defaultItem, MENUITEM_COLOR);
+    if (selectedItem == 0 || selectedItem == MENUITEM_VALUE_CANCELLED) {
+      // start a new game
+      selectedItem = 0;
+      break;
+    } else {
+      // load game
+      selectedItem = save_slot_menu(1);
+      if (selectedItem != MENUITEM_VALUE_CANCELLED) {
+        break;
+      }
+      defaultItem = 1;
+    }
+  }
+  // TODO PlayMusic
+  fade_out(1);
+  return (int)selectedItem;
 }

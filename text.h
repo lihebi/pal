@@ -8,4 +8,6 @@ typedef enum tagDialogPosition {
   DIALOG_CENTER_WINDOW
 } DialogPosition;
 
+#define PAL_ADDITIONAL_WORD_FIRST 10000
+
 #endif /* end of include guard: __TEXT_H__ */

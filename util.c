@@ -41,3 +41,24 @@ int MKF_read_chunk(char *buffer, uint size, uint chunkId, FILE *fp) {
   fread(buffer, chunkLen, 1, fp);
   return (int)chunkLen;
 }
+int MKF_decompress_chunk(char *buf, uint size, uint chunkId, FILE *fp) {
+  char *_buf;
+  int len;
+  len = MKF_get_chunk_size(chunkId, fp);
+  _buf = (char*)malloc(len);
+  MKF_read_chunk(_buf, len, chunkId, fp);
+  len = decompress(_buf, buf, size);
+  free(_buf);
+  return len;
+}
+int FBP_blit_to_surface(Byte *bitmapFBP, SDL_Surface *surface) {
+  int x,y;
+  Byte *p;
+  for (y=0;y<200;y++) {
+    p = (Byte*)(surface->pixels) + y*surface->pitch;
+    for (x=0;x<320;x++) {
+      *(p++) = *(bitmapFBP++);
+    }
+  }
+  return 0;
+}

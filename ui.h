@@ -5,6 +5,9 @@
 
 #define CHUNKNUM_SPRITEUI 9
 
+#define MAINMENU_LABEL_NEWGAME 7
+#define MAINMENU_LABEL_LOADGAME 8
+
 typedef struct tagMenuItem {
   ushort value;
   ushort numWord;
